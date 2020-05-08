@@ -1597,7 +1597,7 @@ $.extend(Selectize.prototype, {
 		}
 
 		if (!self.canCreate(input)) {
-			callback();
+			callback(undefined, self);
 			return false;
 		}
 
@@ -1613,19 +1613,19 @@ $.extend(Selectize.prototype, {
 		var create = once(function(data) {
 			self.unlock();
 
-			if (!data || typeof data !== 'object') return callback();
+			if (!data || typeof data !== 'object') return callback(undefined, self);
 			var value = hash_key(data[self.settings.valueField]);
-			if (typeof value !== 'string') return callback();
+			if (typeof value !== 'string') return callback(undefined, self);
 
 			self.setTextboxValue('');
 			self.addOption(data);
 			self.setCaret(caret);
 			self.addItem(value);
 			self.refreshOptions(triggerDropdown && self.settings.mode !== 'single');
-			callback(data);
+			callback(data, self);
 		});
 
-		var output = setup.apply(this, [input, create]);
+		var output = setup.apply(this, [input, create, self]);
 		if (typeof output !== 'undefined') {
 			create(output);
 		}
